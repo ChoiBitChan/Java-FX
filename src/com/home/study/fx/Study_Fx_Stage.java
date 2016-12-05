@@ -1,4 +1,4 @@
-package com.home.study.stage;
+package com.home.study.fx;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -8,8 +8,10 @@ import javafx.stage.Stage;
 public class Study_Fx_Stage extends Application{
 
 	@Override
-	public void start(Stage stage) throws Exception {
+	public void start(Stage stage) {
 		// TODO Auto-generated method stub
+		// stage > scene > container(pane) > node
+		
 		try {
 			Pane pane = new Pane(); // containerÀÇ Á¾·ù
 			
@@ -23,6 +25,7 @@ public class Study_Fx_Stage extends Application{
 			
 		} catch (Exception e) {
 			// TODO: handle exception
+			e.printStackTrace();
 		}
 		
 		

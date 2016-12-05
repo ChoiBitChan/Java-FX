@@ -1,4 +1,4 @@
-package com.home.study.button;
+package com.home.study.fx;
 
 import javafx.application.Application;
 import javafx.geometry.Pos;
@@ -8,11 +8,13 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
-public class Study_Fx_Text extends Application {
+public class Study_Fx_Button extends Application {
 
 	@Override
-	public void start(Stage stage) throws Exception {
+	public void start(Stage stage) {
 		// TODO Auto-generated method stub
+		// stage > scene > container(pane) > node
+		
 		try {
 			Label label = new Label();
 			label.setText(Integer.toString(num)); // 문자만 가능
@@ -37,8 +39,10 @@ public class Study_Fx_Text extends Application {
 			
 			stage.setScene(scene);
 			stage.show();
+			
 		} catch (Exception e) {
 			// TODO: handle exception
+			e.printStackTrace();
 		}
 		
 	}
