@@ -39,8 +39,6 @@ public class Game_Test extends Application {
 	
 	GridPane grid = new GridPane();
 	
-	
-	
 	Scene scene = new Scene(grid, height, width);
 	
 	@Override
@@ -62,7 +60,7 @@ public class Game_Test extends Application {
 		
 		// 생성
 		head = new Game_Test_Point();
-		random = new Game_Test_Point();
+		//random = new Game_Test_Point();
 		
 		
 		//헤드의 초기위치 설정
@@ -72,7 +70,6 @@ public class Game_Test extends Application {
 		head.setX(x);
 		head.setY(y);
 		
-		
 		// 리스트
 		headlist = new LinkedList<>();
 		headlist.add(head);
@@ -80,23 +77,7 @@ public class Game_Test extends Application {
 		//headlist.add(tail);
 		System.out.println(headlist.size());
 
-		
-		
-		
-		// 랜덤위치
-		ranX = random.getX() + (int)(Math.random() * 20);
-		ranY = random.getY() + (int)(Math.random() * 20);
-		/*
-		if (x == ranX && y == ranY){
-			ranX = random.getX() + (int)(Math.random() * 20);
-			ranY = random.getY() + (int)(Math.random() * 20);
-		}
-		*/
-		panel[ranY][ranX].setFill(Color.RED);
-		random.setX(ranX);
-		random.setY(ranY);
-		//랜덤의 x : 3
-		//랜덤의 y : 3
+		random(); // 초기 랜덤 생성
 		
 		
 		
@@ -164,6 +145,7 @@ public class Game_Test extends Application {
 			//먹는 로직 -> 먹음과 동시에 헤드가 길어짐
 			headlist.add(random);
 			head = random;
+			random(); // 먹고 나서 새로운 함수 생성
 		}
 		else {
 		
@@ -180,7 +162,7 @@ public class Game_Test extends Application {
 		
 		clear(); // 화면 초기화
 		//리스트에 들어있는 모든 객체를 찍어줘야함
-		for(int i=0; i<headlist.size(); i++){
+		for(int i = 0; i < headlist.size(); i++){
 			int x = headlist.get(i).getX();
 			int y = headlist.get(i).getY();
 			panel[y][x].setFill(Color.YELLOW);
@@ -193,13 +175,34 @@ public class Game_Test extends Application {
 				panel[i][j].setFill(Color.BLACK); // 화면 색칠				
 				if(random.getX()==j && random.getY()==i){ // 랜덤값 유지
 					panel[i][j].setFill(Color.RED);
+					
 				}
+			}
+		}
+	}
+	
+	public void random() {
+		random = new Game_Test_Point();
+		
+		ranX = random.getX() + (int)(Math.random() * 20);
+		ranY = random.getY() + (int)(Math.random() * 20);
+		panel[ranY][ranX].setFill(Color.RED);
+		random.setX(ranX);
+		random.setY(ranY);
+		
+		for(int i = 0; i < headlist.size(); i++){
+			int x = headlist.get(i).getX();
+			int y = headlist.get(i).getY();
+			if(x == ranX && y == ranY){
+				random();
 			}
 		}
 	}
 	
 	public static void main(String[] args) {
 		launch(args);
+		//Game_Test_Going going = new Game_Test_Going();
+		//going.start();
 	}
 
 }
