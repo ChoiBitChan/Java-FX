@@ -232,7 +232,8 @@ public class Game_Test extends Application {
 		for(int i = 0; i < headlist.size(); i++){
 			int x = headlist.get(i).getX();
 			int y = headlist.get(i).getY();
-			panel[y][x].setFill(headlist.get(i).getColor());
+			//panel[y][x].setFill(headlist.get(i).getColor());
+			panel[y][x].setFill(hd_color);
 		}
 	}
 	
@@ -256,7 +257,7 @@ public class Game_Test extends Application {
 		panel[ranY][ranX].setFill(ran_color);
 		random.setX(ranX);
 		random.setY(ranY);
-		random.setColor(Color.RED);
+		//random.setColor(Color.RED);
 		
 		for(int i = 0; i < headlist.size(); i++){
 			int x = headlist.get(i).getX();
@@ -288,7 +289,7 @@ public class Game_Test extends Application {
 		panel[y][x].setFill(hd_color);
 		head.setX(x);
 		head.setY(y);
-		head.setColor(Color.BLUE);
+		//head.setColor(Color.BLUE);
 		
 		headlist = new LinkedList<>();
 		headlist.add(head);
