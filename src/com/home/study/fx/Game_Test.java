@@ -5,6 +5,7 @@ import java.util.LinkedList;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.animation.Animation.Status;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
@@ -28,6 +29,9 @@ public class Game_Test extends Application {
 	int cnt = 0;
 	
 	int rect_size = 20;
+	
+	int score = 0;
+	int eat = 0;
 	
 	int height = 420;
 	int width = 600;
@@ -74,7 +78,7 @@ public class Game_Test extends Application {
 			for (int j = 0; j < xCnt; j++){
 				Rectangle rect = new Rectangle(rect_size, rect_size);
 				rect.setFill(bg_color);
-				//rect.setStroke(bord_color);
+				rect.setStroke(bord_color);
 				panel[i][j] = rect;
 				
 				grid.add(rect, j, i);
@@ -82,7 +86,8 @@ public class Game_Test extends Application {
 		}
 		
 		// 생성
-		head = new Game_Test_Point();
+
+/*		head = new Game_Test_Point();
 		
 		time = 100;
 		
@@ -90,19 +95,20 @@ public class Game_Test extends Application {
 		x = head.getX() + (xCnt/2);
 		y = head.getY() + (yCnt/2);
 		panel[y][x].setFill(hd_color);
-		/*
+		
 		panel[y][x].setArcWidth(50);
 		panel[y][x].setArcHeight(50);
-		*/
+		
 		head.setX(x);
 		head.setY(y);
 		
 		// 리스트
 		headlist = new LinkedList<>();
 		headlist.add(head);
+		
 
 		random(); // 초기 랜덤 생성
-		
+*/		
 		scene.setOnKeyPressed(e->{
 			if(e.getCode() == KeyCode.UP){
 				//move(-1, 0);
@@ -121,7 +127,20 @@ public class Game_Test extends Application {
 				direction = Direction.Left;
 			}
 			if(e.getCode() == KeyCode.SPACE){
-				//move(0, -1);
+			}
+			if(e.getCode() == KeyCode.ENTER){
+				startgame();
+				if (timeline.getStatus() == Status.STOPPED){
+					timeline.play();
+				}
+			}
+			if(e.getCode() == KeyCode.P){
+				if(timeline.getStatus() == Status.RUNNING){					
+					timeline.stop();
+				}
+				else if(timeline.getStatus() == Status.STOPPED){
+					timeline.play();
+				}
 			}
 		});
 		
@@ -130,7 +149,7 @@ public class Game_Test extends Application {
 		
 		//going.start();
 
-	// timeline 생성
+/*	// timeline 생성
 	timeline = new Timeline();
 		
 	// KeyFrame 이름 = new KeyFrame(Duration.millis(초), event -> 이벤트 실행 할 메소드명());
@@ -143,7 +162,7 @@ public class Game_Test extends Application {
 	timeline.setCycleCount(Timeline.INDEFINITE); // 무한으로 돌기
 	
 	// timeline.play();
-	timeline.play();
+	timeline.play();*/
 		
 	
 	} //start 메소드 종료
@@ -183,6 +202,7 @@ public class Game_Test extends Application {
 		   panel[temp_y][temp_x].getFill() == hd_color
 		  ){
 			System.out.println("게임오버");
+			timeline.stop();
 			return;
 		}
 		if(temp_y == random.getY() && temp_x == random.getX()){
@@ -190,7 +210,9 @@ public class Game_Test extends Application {
 			headlist.add(random);
 			head = random;
 			random(); // 먹고 나서 새로운 함수 생성
-			System.out.println(headlist.size());
+			System.out.println("몸통길이 : " + headlist.size());
+			eat++;
+			System.out.println("먹은과일 수 : " + eat);
 		}
 		else {
 		
@@ -210,7 +232,7 @@ public class Game_Test extends Application {
 		for(int i = 0; i < headlist.size(); i++){
 			int x = headlist.get(i).getX();
 			int y = headlist.get(i).getY();
-			panel[y][x].setFill(hd_color);
+			panel[y][x].setFill(headlist.get(i).getColor());
 		}
 	}
 	
@@ -234,6 +256,7 @@ public class Game_Test extends Application {
 		panel[ranY][ranX].setFill(ran_color);
 		random.setX(ranX);
 		random.setY(ranY);
+		random.setColor(Color.RED);
 		
 		for(int i = 0; i < headlist.size(); i++){
 			int x = headlist.get(i).getX();
@@ -241,6 +264,46 @@ public class Game_Test extends Application {
 			if(x == ranX && y == ranY){
 				random();
 			}
+		}
+	}
+	
+	
+	public void startgame(){
+		
+		for(int i = 0; i < yCnt; i++){
+			for (int j = 0; j < xCnt; j++){
+				panel[i][j].setFill(bg_color); // 화면 색칠							
+			}
+		}
+		
+		sethead();
+		setAuto();
+		random();
+	}
+	
+	public void sethead(){
+		head = new Game_Test_Point();
+		x = head.getX() + (xCnt/2);
+		y = head.getY() + (yCnt/2);
+		panel[y][x].setFill(hd_color);
+		head.setX(x);
+		head.setY(y);
+		head.setColor(Color.BLUE);
+		
+		headlist = new LinkedList<>();
+		headlist.add(head);
+		direction = Direction.Up;
+		time = 100;
+	}
+	
+	public void setAuto(){
+		
+		if(timeline == null){ // timeline이 없을때만 실행되게 만든다
+		timeline = new Timeline();
+		KeyFrame k = new KeyFrame(Duration.millis(time), e -> going());
+		timeline.getKeyFrames().add(k);	
+		timeline.setCycleCount(Timeline.INDEFINITE); // 무한으로 돌기
+		timeline.play();
 		}
 	}
 	
