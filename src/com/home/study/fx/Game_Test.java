@@ -1,14 +1,11 @@
 package com.home.study.fx;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.Border;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
@@ -29,7 +26,7 @@ public class Game_Test extends Application {
 	int rect_size = 20;
 	
 	int height = 420;
-	int width = 420;
+	int width = 600;
 	
 	Rectangle[][] panel;
 	Game_Test_Point random;
@@ -39,7 +36,7 @@ public class Game_Test extends Application {
 	
 	GridPane grid = new GridPane();
 	
-	Scene scene = new Scene(grid, height, width);
+	Scene scene = new Scene(grid, width, height);
 	
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -60,7 +57,6 @@ public class Game_Test extends Application {
 		
 		// 생성
 		head = new Game_Test_Point();
-		//random = new Game_Test_Point();
 		
 		
 		//헤드의 초기위치 설정
@@ -73,57 +69,22 @@ public class Game_Test extends Application {
 		// 리스트
 		headlist = new LinkedList<>();
 		headlist.add(head);
-		//headlist.add(body);
-		//headlist.add(tail);
-		System.out.println(headlist.size());
 
 		random(); // 초기 랜덤 생성
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 		scene.setOnKeyPressed(e->{
-			
 			if(e.getCode() == KeyCode.UP){
-				
 				move(-1, 0);
-
 			}
-			
 			if(e.getCode() == KeyCode.DOWN){
-
 				move(1, 0);
-							
 			}
-			
 			if(e.getCode() == KeyCode.RIGHT){
-
 				move(0, 1);
-				
 			}
-			
 			if(e.getCode() == KeyCode.LEFT){
-
 				move(0, -1);
-
 			}
-			
 		});
 		
 		stage.setScene(scene);
@@ -137,15 +98,22 @@ public class Game_Test extends Application {
 		//미리 움직여 보고 벽이나 자기자신이 있다면 멈추고, 음식이 있다면 길어진다.
 		int temp_y = head.getY() + off_y;
 		int temp_x = head.getX() + off_x;
-		if(temp_y<0 || temp_x<0 || temp_y>yCnt-1 || temp_x>xCnt-1 || panel[temp_y][temp_x].getFill()==Color.YELLOW){
+		if(
+		   temp_y < 0 || 
+		   temp_x < 0 ||
+		   temp_y > yCnt - 1 ||
+		   temp_x > xCnt - 1 ||
+		   panel[temp_y][temp_x].getFill() == Color.YELLOW
+		  ){
 			System.out.println("게임오버");
 			return;
 		}
-		if(temp_y==random.getY() && temp_x==random.getX()){
+		if(temp_y == random.getY() && temp_x == random.getX()){
 			//먹는 로직 -> 먹음과 동시에 헤드가 길어짐
 			headlist.add(random);
 			head = random;
 			random(); // 먹고 나서 새로운 함수 생성
+			System.out.println(headlist.size());
 		}
 		else {
 		
@@ -173,7 +141,7 @@ public class Game_Test extends Application {
 		for(int i = 0; i < yCnt; i++){
 			for (int j = 0; j < xCnt; j++){
 				panel[i][j].setFill(Color.BLACK); // 화면 색칠				
-				if(random.getX()==j && random.getY()==i){ // 랜덤값 유지
+				if(random.getX() == j && random.getY() == i){ // 랜덤값 유지
 					panel[i][j].setFill(Color.RED);
 					
 				}

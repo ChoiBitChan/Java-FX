@@ -18,17 +18,11 @@ public class Game_Test_Point {
 		this.y = y;
 	}
 	
+	/*
 	public void move(int y, int x){
 		this.y = this.y + y;
 		this.x = this.x + x;
 	}
-	
-	/*
-	@Override
-	public String toString() {
-		return Integer.toString(this.x) + Integer.toString(this.y);
-	}
 	*/
-	
 	
 }

@@ -4,6 +4,9 @@ public class Game_Test_Going extends Thread {
 	
 	Game_Test game_test = new Game_Test();
 	
+	public Game_Test_Going(){
+		
+	}
 	
 	public void run() {
 		
