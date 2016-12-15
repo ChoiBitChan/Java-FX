@@ -1,8 +1,8 @@
-package com.home.study.fx;
+package BC_Snake;
 
 import javafx.scene.paint.Paint;
 
-public class Game_Test_Point {
+public class SnakePoint {
 
 	private int x;
 	private int y;

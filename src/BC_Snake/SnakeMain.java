@@ -1,4 +1,4 @@
-package com.home.study.fx;
+package BC_Snake;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -7,17 +7,20 @@ import javafx.animation.Animation.Status;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-public class Game_Test extends Application {
-
+public class SnakeMain extends Application {
+	
 	int xCnt = 20;
 	int yCnt = 20;
 
@@ -31,28 +34,30 @@ public class Game_Test extends Application {
 
 	int rect_size = 20;
 
-	int score = 0;
 	int eat = 0;
 
 	int height = 420;
 	int width = 600;
 
 	Rectangle[][] panel;
-	Game_Test_Point random;
-	Game_Test_Point head;
+	SnakePoint random;
+	SnakePoint head;
+	TimeThread tt;
 	Paint randomcolor;
 
 	Color bg_color = Color.BLACK;
 	Color bord_color = Color.WHITE;
 	Color hd_color = Color.YELLOW;
 
-	LinkedList<Game_Test_Point> headlist;
+	LinkedList<SnakePoint> headlist;
 	ArrayList<Color> colorlist;
 	ArrayList<Color> randomlist;
 
+	Label Tlabel = new Label();
+	Label Slabel = new Label();
 	GridPane grid = new GridPane();
-
-	Scene scene = new Scene(grid, width, height);
+	StackPane pane = new StackPane();
+	Scene scene = new Scene(pane, width, height);
 
 	// Timeline 선언
 	Timeline timeline;
@@ -70,7 +75,19 @@ public class Game_Test extends Application {
 	@Override
 	public void start(Stage stage) throws Exception {
 		// TODO Auto-generated method stub
-
+		
+		tt = new TimeThread(this);
+		tt.start();
+		
+		Tlabel.setStyle("-fx-font-size:25");
+		Slabel.setStyle("-fx-font-size:25");
+		pane.getChildren().add(grid);
+		pane.getChildren().add(Tlabel);
+		pane.getChildren().add(Slabel);
+		pane.setAlignment(Tlabel, Pos.CENTER_RIGHT);
+		pane.setAlignment(Slabel, Pos.TOP_RIGHT);
+		
+		
 		// 패널생성
 		panel = new Rectangle[yCnt][xCnt];
 		for (int i = 0; i < yCnt; i++) {
@@ -81,16 +98,18 @@ public class Game_Test extends Application {
 				panel[i][j] = rect;
 
 				grid.add(rect, j, i);
+				
 			}
 		}
 
 		colorlist = new ArrayList<>();
-		colorlist.add(Color.RED);
 		colorlist.add(Color.BLUE);
+		colorlist.add(Color.RED);
 		colorlist.add(Color.ORANGE);
 		colorlist.add(Color.GREEN);
-		colorlist.add(Color.SKYBLUE);
-
+		colorlist.add(Color.GOLD);
+		colorlist.add(Color.SILVER);
+		
 		// 생성
 
 		/*
@@ -113,24 +132,41 @@ public class Game_Test extends Application {
 		scene.setOnKeyPressed(e -> {
 			if (e.getCode() == KeyCode.UP) {
 				// move(-1, 0);
-				direction = Direction.Up;
+				if(direction == Direction.Down){
+					return;
+				} else {
+					direction = Direction.Up;
+				}
 			}
 			if (e.getCode() == KeyCode.DOWN) {
 				// move(1, 0);
-				direction = Direction.Down;
+				if(direction == Direction.Up){
+					return;
+				} else {
+					direction = Direction.Down;
+				}
 			}
 			if (e.getCode() == KeyCode.RIGHT) {
 				// move(0, 1);
-				direction = Direction.Right;
+				if(direction == Direction.Left){
+					return;
+				} else {
+					direction = Direction.Right;
+				}
 			}
 			if (e.getCode() == KeyCode.LEFT) {
 				// move(0, -1);
-				direction = Direction.Left;
+				if(direction == Direction.Right){
+					return;
+				} else {
+					direction = Direction.Left;
+				}
 			}
 			if (e.getCode() == KeyCode.SPACE) {
 			}
 			if (e.getCode() == KeyCode.ENTER) {
 				startgame();
+				tt.bonusCnt = 101;
 				if (timeline.getStatus() == Status.STOPPED) {
 					timeline.play();
 				}
@@ -152,9 +188,8 @@ public class Game_Test extends Application {
 		/*
 		 * // timeline 생성 timeline = new Timeline();
 		 * 
-		 * // KeyFrame 이름 = new KeyFrame(Duration.millis(초), event -> 이벤트 실행 할
-		 * 메소드명()); KeyFrame k = new KeyFrame(Duration.millis(time), e ->
-		 * going());
+		 * // KeyFrame 이름 = new KeyFrame(Duration.millis(초), event -> 이벤트 실행 할 메소드명()); 
+		 * KeyFrame k = new KeyFrame(Duration.millis(time), e -> going());
 		 * 
 		 * // timeline.getKeyFrames().add(KeyFrame 이름);
 		 * timeline.getKeyFrames().add(k);
@@ -174,6 +209,7 @@ public class Game_Test extends Application {
 	// }
 
 	public void going() { // 시계방향 순서
+		
 		if (direction == Direction.Up) {
 			move(-1, 0);
 		}
@@ -187,6 +223,11 @@ public class Game_Test extends Application {
 			move(0, -1);
 		}
 	}
+	
+	public void timer() {
+		Tlabel.setText("BONUS : " + Integer.toString(tt.bonusCnt));
+		Slabel.setText("SCORE : " + Integer.toString(tt.score));
+	}
 
 	public void move(int off_y, int off_x) { // 함수를 생성한다
 
@@ -196,23 +237,36 @@ public class Game_Test extends Application {
 		if (temp_y < 0 ||
 			temp_x < 0 ||
 			temp_y > yCnt - 1 ||
-			temp_x > xCnt - 1 ||
-			panel[temp_y][temp_x].getFill() == hd_color) {
-			System.out.println("게임오버");
-			timeline.stop();
+			temp_x > xCnt - 1) {
+				System.out.println("게임오버");
+				timeline.stop();
+				tt.bonusCnt = 101;
 			return;
-		}	
+		}
+		for(int i = 0; i<headlist.size(); i++){
+			int x = headlist.get(i).getX();
+			int y = headlist.get(i).getY();
+			if((temp_y == y) && (temp_x == x)){
+				System.out.println("게임오버");
+				timeline.stop();
+				tt.bonusCnt = 101;
+			}
+		}
 		if (temp_y == random.getY() && temp_x == random.getX()) {
 			// 먹는 로직 -> 먹음과 동시에 헤드가 길어짐
 			headlist.add(random);
 			head = random;
+			
+			tt.score = tt.score + tt.bonusCnt;
+			tt.bonusCnt = 100;
+			
 			random(); // 먹고 나서 새로운 함수 생성
 			System.out.println("몸통길이 : " + headlist.size());
 			eat++;
 			System.out.println("먹은과일 수 : " + eat);
 		} else {
 			// 새로운 헤드를 만들어 붙이고
-			Game_Test_Point pt = new Game_Test_Point(); // pt 객체 생성
+			SnakePoint pt = new SnakePoint(); // pt 객체 생성
 			pt.setY(head.getY() + off_y);
 			pt.setX(head.getX() + off_x);
 			headlist.add(pt); // 리스트에 pt 추가
@@ -268,12 +322,11 @@ public class Game_Test extends Application {
 	}
 
 	public void random() {
-		random = new Game_Test_Point();
+		random = new SnakePoint();
 
 		ranC = (int) (Math.random() * colorlist.size());
 		randomcolor = colorlist.get(ranC);
-		randomlist.add(colorlist.get(ranC));
-
+		
 		ranX = random.getX() + (int) (Math.random() * 20);
 		ranY = random.getY() + (int) (Math.random() * 20);
 		panel[ranY][ranX].setFill(randomcolor);
@@ -285,8 +338,10 @@ public class Game_Test extends Application {
 			int y = headlist.get(i).getY();
 			if (x == ranX && y == ranY) {
 				random();
+				return; // 중요!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			}
 		}
+		randomlist.add(colorlist.get(ranC));
 	}
 
 	public void startgame() {
@@ -302,7 +357,7 @@ public class Game_Test extends Application {
 	}
 
 	public void sethead() {
-		head = new Game_Test_Point();
+		head = new SnakePoint();
 		x = head.getX() + (xCnt / 2);
 		y = head.getY() + (yCnt / 2);
 		panel[y][x].setFill(hd_color);
@@ -313,7 +368,7 @@ public class Game_Test extends Application {
 		randomlist = new ArrayList<>();
 		headlist.add(head);
 		direction = Direction.Up;
-		time = 250;
+		time = 100;
 		eat = 0;
 		System.out.println(headlist.size());
 	}
