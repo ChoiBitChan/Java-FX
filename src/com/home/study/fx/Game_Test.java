@@ -224,6 +224,7 @@ public class Game_Test extends Application {
 		clear(); // 화면 초기화
 		
 		// 리스트에 들어있는 모든 객체를 찍어줘야함
+		/*
 		for (int i = 0; i < headlist.size(); i++) {
 			if (i == 0) {
 				int x = headlist.get(i).getX();
@@ -237,6 +238,21 @@ public class Game_Test extends Application {
 				// System.out.println("먹은거 색칠");
 			}
 		}
+		*/
+		for (int i = headlist.size(); i > 0 ; i--) {
+			if (i == headlist.size()) {
+				int x = headlist.get(i - 1).getX();
+				int y = headlist.get(i - 1).getY();
+				panel[y][x].setFill(hd_color);
+				// System.out.println("헤드만 색칠");
+			} else if (i < headlist.size()) {
+				int x = headlist.get(i - 1).getX();
+				int y = headlist.get(i - 1).getY();
+				panel[y][x].setFill(randomlist.get(i - 1));
+				// System.out.println("먹은거 색칠");
+			}
+		}
+		
 	}
 
 	public void clear() {
@@ -297,7 +313,7 @@ public class Game_Test extends Application {
 		randomlist = new ArrayList<>();
 		headlist.add(head);
 		direction = Direction.Up;
-		time = 100;
+		time = 250;
 		eat = 0;
 		System.out.println(headlist.size());
 	}
