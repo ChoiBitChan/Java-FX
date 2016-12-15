@@ -167,6 +167,7 @@ public class SnakeMain extends Application {
 			if (e.getCode() == KeyCode.ENTER) {
 				startgame();
 				tt.bonusCnt = 101;
+				tt.score = 0;
 				if (timeline.getStatus() == Status.STOPPED) {
 					timeline.play();
 				}
@@ -241,6 +242,7 @@ public class SnakeMain extends Application {
 				System.out.println("게임오버");
 				timeline.stop();
 				tt.bonusCnt = 101;
+				tt.score = 0;
 			return;
 		}
 		for(int i = 0; i<headlist.size(); i++){
@@ -250,6 +252,7 @@ public class SnakeMain extends Application {
 				System.out.println("게임오버");
 				timeline.stop();
 				tt.bonusCnt = 101;
+				tt.score = 0;
 			}
 		}
 		if (temp_y == random.getY() && temp_x == random.getX()) {
